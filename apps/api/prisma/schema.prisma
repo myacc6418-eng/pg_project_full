@@ -1,0 +1,515 @@
+// Production PostgreSQL Prisma Schema for PG Finder Modular Monolith
+// Note: In AI Studio preview runtime without an external PostgreSQL server,
+// apps/api/src/shared/db.ts provides a persistent file-backed transactional store
+// implementing these exact entities and invariants.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  TENANT
+  PG_OWNER
+  SUPER_ADMIN
+}
+
+enum PropertyGenderType {
+  BOYS
+  GIRLS
+  COLIVING
+}
+
+enum PropertyApprovalStatus {
+  DRAFT
+  PENDING_APPROVAL
+  UNDER_REVIEW
+  CORRECTIONS_REQUIRED
+  RESUBMITTED
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum LocationVerificationStatus {
+  DRAFT
+  PENDING_VERIFICATION
+  UNDER_REVIEW
+  CORRECTIONS_REQUIRED
+  RESUBMITTED
+  VERIFIED
+  REJECTED
+  REVERIFICATION_REQUIRED
+}
+
+enum BedStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+  MAINTENANCE
+  INACTIVE
+}
+
+enum SubscriptionTier {
+  BASIC
+  PRO
+  BUSINESS
+}
+
+enum ExpenseCategory {
+  GROCERIES
+  ELECTRICITY
+  WATER
+  INTERNET
+  SALARIES
+  MAINTENANCE
+  CLEANING
+  RENT
+  SUPPLIES
+  OTHER
+}
+
+enum DocumentVerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  RESUBMISSION_REQUIRED
+}
+
+model User {
+  id                  String        @id @default(cuid())
+  fullName            String
+  email               String        @unique
+  phone               String        @unique
+  passwordHash        String
+  role                UserRole
+  isVerified          Boolean       @default(false)
+  isSuspended         Boolean       @default(false)
+  businessName        String?
+  businessDescription String?
+  city                String?
+  avatarUrl           String?
+  language            String        @default("en")
+  deletionRequestedAt DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  sessions           UserSession[]
+  properties         Property[]
+  ownerSubscription  OwnerSubscription?
+  tenantStays        TenantStay[]
+  joiningRequests    JoiningRequest[]
+  eventRegistrations EventRegistration[]
+  notifications      Notification[]
+}
+
+model UserSession {
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokenHash String
+  deviceLabel      String?
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model Property {
+  id                    String                     @id @default(cuid())
+  ownerId               String
+  owner                 User                       @relation(fields: [ownerId], references: [id])
+  name                  String
+  description           String
+  genderType            PropertyGenderType
+  contactPhone          String?
+  contactEmail          String?
+  address               String
+  landmark              String
+  locality              String
+  city                  String
+  state                 String
+  postalCode            String
+  googleMapsUrl         String?
+  ownerLat              Decimal                    @db.Decimal(9, 6)
+  ownerLng              Decimal                    @db.Decimal(9, 6)
+  verifiedLat           Decimal?                   @db.Decimal(9, 6)
+  verifiedLng           Decimal?                   @db.Decimal(9, 6)
+  startingRentInr       Int
+  securityDepositInr    Int
+  approvalStatus        PropertyApprovalStatus     @default(PENDING_APPROVAL)
+  locationStatus        LocationVerificationStatus @default(PENDING_VERIFICATION)
+  hasLifetimeListing    Boolean                    @default(false)
+  coveredBySubscription Boolean                    @default(false)
+  isPromoted            Boolean                    @default(false)
+  promotionEndsAt       DateTime?
+  isArchived            Boolean                    @default(false)
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+
+  floors          Floor[]
+  rooms           Room[]
+  beds            Bed[]
+  stays           TenantStay[]
+  expenses        Expense[]
+  joiningRequests JoiningRequest[]
+  documents       PropertyDocument[]
+  outstandingDues OutstandingDue[]
+  reviews         PropertyReview[]
+
+  @@index([city, locality])
+  @@index([ownerId])
+}
+
+model Floor {
+  id          String   @id @default(cuid())
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  floorNumber Int
+  label       String
+  createdAt   DateTime @default(now())
+
+  rooms Room[]
+
+  @@unique([propertyId, floorNumber])
+}
+
+model Room {
+  id             String   @id @default(cuid())
+  propertyId     String
+  property       Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  floorId        String?
+  floor          Floor?   @relation(fields: [floorId], references: [id], onDelete: SetNull)
+  floorNumber    Int
+  roomNumber     String
+  roomType       String
+  monthlyRentInr Int
+  depositInr     Int
+  isActive       Boolean  @default(true)
+  notes          String?
+
+  beds Bed[]
+
+  @@unique([propertyId, roomNumber])
+}
+
+model Bed {
+  id                     String    @id @default(cuid())
+  propertyId             String
+  property               Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  roomId                 String
+  room                   Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  bedCode                String
+  status                 BedStatus @default(AVAILABLE)
+  monthlyRentOverrideInr Int?
+  notes                  String?
+
+  stays TenantStay[]
+
+  @@unique([roomId, bedCode])
+}
+
+model PropertyDocument {
+  id         String                     @id @default(cuid())
+  propertyId String
+  property   Property                   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  ownerId    String
+  docType    String
+  title      String
+  fileUrl    String
+  status     DocumentVerificationStatus @default(PENDING)
+  notes      String?
+  uploadedAt DateTime                   @default(now())
+}
+
+model JoiningRequest {
+  id                       String    @id @default(cuid())
+  tenantId                 String
+  tenant                   User      @relation(fields: [tenantId], references: [id])
+  propertyId               String
+  property                 Property  @relation(fields: [propertyId], references: [id])
+  preferredRoomType        String
+  moveInDate               DateTime
+  notes                    String?
+  ownerNotes               String?
+  origin                   String    @default("DIRECT")
+  status                   String
+  assignedRoomId           String?
+  assignedBedId            String?
+  acceptedAgreementVersion String?
+  acceptedAt               DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+}
+
+model TenantStay {
+  id                       String    @id @default(cuid())
+  tenantCode               String?   @unique
+  tenantId                 String
+  tenant                   User      @relation(fields: [tenantId], references: [id])
+  propertyId               String
+  property                 Property  @relation(fields: [propertyId], references: [id])
+  roomId                   String
+  bedId                    String
+  bed                      Bed       @relation(fields: [bedId], references: [id])
+  monthlyRentInr           Int
+  securityDepositInr       Int
+  depositPaid              Boolean   @default(true)
+  emergencyContactName     String?
+  emergencyContactPhone    String?
+  status                   String
+  noticeDays               Int       @default(30)
+  termsAcceptedAt          DateTime
+  acceptedAgreementVersion String?
+  checkoutRequestedAt      DateTime?
+  checkedOutAt             DateTime?
+  createdAt                DateTime  @default(now())
+
+  rentCharges     RentCharge[]
+  documents       TenantDocument[]
+  bedTransfers    BedTransfer[]
+  outstandingDues OutstandingDue[]
+
+  @@index([tenantId, status])
+}
+
+model BedTransfer {
+  id          String     @id @default(cuid())
+  stayId      String
+  stay        TenantStay @relation(fields: [stayId], references: [id], onDelete: Cascade)
+  propertyId  String
+  fromRoomId  String
+  fromBedId   String
+  fromBedCode String
+  toRoomId    String
+  toBedId     String
+  toBedCode   String
+  reason      String
+  actorName   String
+  createdAt   DateTime   @default(now())
+}
+
+model TenantDocument {
+  id         String                     @id @default(cuid())
+  stayId     String
+  stay       TenantStay                 @relation(fields: [stayId], references: [id], onDelete: Cascade)
+  tenantId   String
+  propertyId String
+  docType    String
+  title      String
+  fileUrl    String
+  status     DocumentVerificationStatus @default(PENDING)
+  notes      String?
+  uploadedAt DateTime                   @default(now())
+}
+
+model RentCharge {
+  id             String     @id @default(cuid())
+  stayId         String
+  stay           TenantStay @relation(fields: [stayId], references: [id])
+  billingMonth   String
+  amountInr      Int
+  lateFeeInr     Int        @default(0)
+  paidAmountInr  Int        @default(0)
+  dueDate        DateTime
+  status         String
+  paymentMode    String?
+  receiptNumber  String?
+  paidAt         DateTime?
+  reminderSentAt DateTime?
+}
+
+model OutstandingDue {
+  id             String      @id @default(cuid())
+  propertyId     String
+  property       Property    @relation(fields: [propertyId], references: [id])
+  stayId         String?
+  stay           TenantStay? @relation(fields: [stayId], references: [id])
+  tenantId       String
+  tenantName     String
+  isFormerTenant Boolean     @default(false)
+  category       String
+  description    String
+  totalAmountInr Int
+  paidAmountInr  Int         @default(0)
+  dueDate        DateTime
+  status         String      @default("OPEN")
+  createdAt      DateTime    @default(now())
+}
+
+model Expense {
+  id         String          @id @default(cuid())
+  propertyId String
+  property   Property        @relation(fields: [propertyId], references: [id])
+  category   ExpenseCategory
+  amountInr  Int
+  date       DateTime
+  notes      String
+  createdAt  DateTime        @default(now())
+}
+
+model StaffTask {
+  id         String   @id @default(cuid())
+  ownerId    String
+  propertyId String
+  staffId    String
+  staffName  String
+  title      String
+  dueDate    DateTime
+  priority   String
+  status     String
+  createdAt  DateTime @default(now())
+}
+
+model PayrollRecord {
+  id            String    @id @default(cuid())
+  ownerId       String
+  propertyId    String
+  staffId       String
+  staffName     String
+  month         String
+  baseSalaryInr Int
+  bonusInr      Int       @default(0)
+  deductionInr  Int       @default(0)
+  netPaidInr    Int
+  status        String    @default("PENDING")
+  paidAt        DateTime?
+}
+
+model PropertyReview {
+  id         String    @id @default(cuid())
+  propertyId String
+  property   Property  @relation(fields: [propertyId], references: [id])
+  tenantId   String
+  tenantName String
+  rating     Int
+  comment    String
+  ownerReply String?
+  repliedAt  DateTime?
+  createdAt  DateTime  @default(now())
+}
+
+model OwnerSubscription {
+  ownerId     String           @id
+  owner       User             @relation(fields: [ownerId], references: [id])
+  tier        SubscriptionTier @default(BASIC)
+  status      String           @default("ACTIVE")
+  renewalDate DateTime
+  graceEndsAt DateTime?
+}
+
+model StartupEvent {
+  id                String   @id @default(cuid())
+  title             String
+  category          String
+  city              String
+  venue             String
+  dateTime          DateTime
+  organizer         String
+  description       String
+  capacity          Int
+  publicationStatus String
+  eventStatus       String
+  isFeatured        Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  registrations EventRegistration[]
+}
+
+model EventRegistration {
+  id        String       @id @default(cuid())
+  eventId   String
+  event     StartupEvent @relation(fields: [eventId], references: [id])
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  status    String
+  attended  Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  @@unique([eventId, userId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  body      String
+  category  String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  actorRole  UserRole
+  action     String
+  targetType String
+  targetId   String
+  details    String
+  createdAt  DateTime @default(now())
+}
+
+model ActivityLog {
+  id            String   @id @default(cuid())
+  ownerId       String
+  propertyId    String?
+  actorId       String
+  actorName     String
+  actorRole     UserRole
+  action        String
+  entityType    String
+  entityId      String
+  previousValue String?
+  newValue      String?
+  timestamp     DateTime @default(now())
+}
+
+model RoommateTask {
+  id             String   @id @default(cuid())
+  propertyId     String
+  roomId         String
+  addedByTenantId String
+  addedByName    String
+  type           String
+  title          String
+  assignedToName String?
+  completed      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+model LaundryRequest {
+  id           String   @id @default(cuid())
+  propertyId   String
+  tenantId     String
+  tenantName   String
+  serviceName  String
+  pickupDate   String
+  itemsSummary String
+  estimatedInr Int
+  status       String   @default("REQUESTED")
+  createdAt    DateTime @default(now())
+}
+
+model SupportTicket {
+  id              String   @id @default(cuid())
+  userId          String
+  userName        String
+  userRole        UserRole
+  propertyId      String?
+  subject         String
+  category        String
+  priority        String
+  status          String   @default("OPEN")
+  assignedTo      String?
+  resolutionNotes String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+

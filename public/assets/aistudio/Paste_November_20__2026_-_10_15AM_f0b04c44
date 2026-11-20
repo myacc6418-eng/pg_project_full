@@ -1,0 +1,2276 @@
+# PG FINDER — COMPLETE MOBILE-FIRST MODULAR MONOLITH APPLICATION
+
+## MASTER DEVELOPMENT PROMPT FOR GOOGLE AI STUDIO
+
+Build a complete, professional, production-oriented PG Finder application for India.
+
+PG Finder is an integrated platform connecting:
+
+1. People searching for Paying Guest accommodation.
+2. Tenants currently living in PG properties.
+3. PG owners managing their properties and operations.
+4. Super Admins managing the marketplace, approvals, monetization, events, and platform operations.
+
+The initial application must follow a **MODULAR MONOLITH ARCHITECTURE**.
+
+Build one integrated application with:
+
+- One frontend codebase.
+- One backend application.
+- One PostgreSQL database.
+- One authentication system.
+- One role-based authorization system.
+- Shared business modules.
+- Shared data contracts.
+- Clearly separated role-specific interfaces.
+
+The system must be designed so individual business modules can be extracted into microservices later without requiring a complete rewrite.
+
+This is a MOBILE-FIRST APPLICATION.
+
+It must look and behave like a polished native mobile application on Android and iOS while also supporting tablet and desktop browsers.
+
+Do not build three disconnected applications.
+
+Do not create unrelated mock data for different dashboards.
+
+Every module must use shared business entities and consistent workflows.
+
+---
+
+# PART 1 — TECHNOLOGY STACK
+
+## Frontend
+
+Use:
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- Lucide React
+- React Router
+- TanStack Query
+- React Hook Form
+- Zod
+- Recharts
+- Motion / Framer Motion
+- Capacitor for Android and iOS packaging
+
+Use existing compatible dependencies when possible.
+
+Do not introduce unnecessary packages.
+
+## Backend
+
+Preferred backend:
+
+- Node.js
+- TypeScript
+- Express.js
+- Prisma ORM
+- PostgreSQL
+- JWT-based authentication
+- Secure refresh token sessions
+- Zod request validation
+- Structured logging
+- Centralized error handling
+- API versioning
+
+If Google AI Studio cannot provision the full backend environment, still generate the backend source, database schema, migrations, API contracts, and configuration examples.
+
+Clearly distinguish implemented functionality from mock-only behavior.
+
+## Architecture
+
+Use a modular monolith with internal business modules.
+
+Modules:
+
+- Authentication
+- Users and Roles
+- PG Owners
+- Properties
+- Property Approvals
+- Location Verification
+- Rooms and Beds
+- Tenant Management
+- Joining Requests
+- Rent Management
+- Payment Records
+- Deposits
+- Expenses
+- Outstanding Dues
+- Food and Mess
+- Complaints
+- Maintenance
+- Staff
+- Payroll
+- Checkout
+- Reviews
+- Notifications
+- Operational Tracking
+- Subscriptions
+- Lifetime Listings
+- Featured Promotions
+- Local Business Advertising
+- Startup Events
+- Event Registrations
+- Platform Analytics
+- CMS
+- Audit Logs
+- Settings
+
+Each module must contain its own business logic, validation, service layer, and data access responsibilities.
+
+Avoid tightly coupling modules through direct database manipulation.
+
+---
+
+# PART 2 — PROJECT STRUCTURE
+
+Use a monorepo-style folder structure.
+
+Example:
+
+pg-finder/
+  apps/
+    mobile/
+      src/
+        app/
+        routes/
+        layouts/
+        components/
+        features/
+          auth/
+          landing/
+          tenant/
+          owner/
+          admin/
+          events/
+        hooks/
+        services/
+        styles/
+        types/
+        utils/
+      capacitor.config.ts
+
+    api/
+      src/
+        app.ts
+        server.ts
+        config/
+        middleware/
+        modules/
+          auth/
+          users/
+          properties/
+          approvals/
+          locations/
+          rooms/
+          tenants/
+          rent/
+          expenses/
+          food/
+          maintenance/
+          staff/
+          subscriptions/
+          advertisements/
+          events/
+          notifications/
+          analytics/
+          audit/
+        shared/
+      prisma/
+        schema.prisma
+        migrations/
+
+  packages/
+    shared/
+      types/
+      schemas/
+      constants/
+      permissions/
+
+  README.md
+  .env.example
+
+Use one shared backend.
+
+Do not build separate Tenant, Owner, and Admin backend servers.
+
+Use one PostgreSQL database.
+
+---
+
+# PART 3 — DESIGN SYSTEM
+
+Create a consistent premium emerald green and white visual identity.
+
+## Color Palette
+
+Primary: #047857
+
+Dark Primary: #065F46
+
+Accent: #10B981
+
+Soft Green: #ECFDF5
+
+Background: #F8FAFC
+
+White: #FFFFFF
+
+Primary Text: #111827
+
+Secondary Text: #6B7280
+
+Border: #E5E7EB
+
+Error: #DC2626
+
+Warning: #F59E0B
+
+Info: #2563EB
+
+Use Inter or another clean, readable sans-serif font.
+
+## Design Style
+
+The application must feel:
+
+- Modern
+- Professional
+- Minimal
+- Trustworthy
+- Mobile-native
+- Smooth
+- Fast
+- Easy to navigate
+
+Use:
+
+- Rounded cards
+- Subtle shadows
+- Consistent spacing
+- Clean typography
+- Professional icons
+- Skeleton loaders
+- Bottom sheets
+- Slide transitions
+- Toast notifications
+- Empty states
+- Confirmation dialogs
+- Accessible forms
+
+Avoid excessive gradients, heavy animations, cluttered dashboards, and tiny text.
+
+## Mobile Requirements
+
+Support screen widths starting at 320px.
+
+Ensure:
+
+- No horizontal overflow.
+- Touch targets are comfortably sized.
+- Bottom navigation respects safe areas.
+- Modals work on small screens.
+- Forms remain usable with the keyboard open.
+- Tables become mobile-friendly cards.
+- Images load responsively.
+- Navigation works with Android back behavior.
+- Loading and error states are handled.
+- Animations respect reduced-motion preferences.
+
+The Super Admin experience must also be responsive, even though its primary use may be on desktop.
+
+---
+
+# PART 4 — PUBLIC LANDING PAGE
+
+Create a complete PG Finder landing page.
+
+This page must be accessible without login.
+
+## Header
+
+Logo: PG Finder
+
+Navigation:
+
+- Home
+- Explore PGs
+- How It Works
+- Features
+- Startup Events
+- For PG Owners
+- Login
+- Get Started
+
+On mobile, use a responsive menu.
+
+## Hero Section
+
+Headline:
+
+**Find Your Perfect PG. Live Smarter.**
+
+Subtitle:
+
+"Discover verified PG accommodations, manage your stay, explore local services, and connect with new opportunities — all in one place."
+
+Primary CTA:
+
+**Explore PGs**
+
+Secondary CTA:
+
+**List Your PG**
+
+Include a professional accommodation-focused hero visual.
+
+Use subtle text reveal animations and clean transitions.
+
+## PG Search
+
+Allow searching by:
+
+- City
+- Locality
+- Budget
+- Boys / Girls / Co-living
+- Available beds
+- Amenities
+
+Show verified, approved PG properties only.
+
+## Featured Properties
+
+Display featured approved properties.
+
+Cards include:
+
+- Property image
+- Property name
+- Location
+- Starting rent
+- Available beds
+- Amenities
+- Verified location indicator
+- View Details
+
+## How It Works
+
+For tenants:
+
+1. Explore PGs.
+2. Compare accommodation.
+3. Request to join.
+4. Complete onboarding.
+5. Manage daily PG life.
+
+For owners:
+
+1. Create owner account.
+2. Add PG property.
+3. Request location verification.
+4. Submit for property approval.
+5. Activate listing entitlement.
+6. Manage PG operations.
+
+## Additional Landing Sections
+
+Include:
+
+- Why Choose PG Finder
+- Verified PG Listings
+- Tenant Benefits
+- PG Owner Benefits
+- Startup Events & Networking
+- Local Services
+- Owner Pricing
+- FAQ
+- Footer
+
+Use realistic fictional demo properties when production data is unavailable.
+
+Do not claim fictional properties are real or verified.
+
+---
+
+# PART 5 — AUTHENTICATION AND ROLE-BASED ACCESS
+
+Implement one centralized authentication system.
+
+Supported roles:
+
+- TENANT
+- PG_OWNER
+- SUPER_ADMIN
+
+Design the authorization layer so additional admin roles and permissions can be added later.
+
+## Login Page
+
+Create a premium mobile-first login screen.
+
+Include:
+
+- PG Finder logo
+- Welcome Back heading
+- Email or phone
+- Password
+- Show/hide password
+- Remember session
+- Forgot Password
+- Login button
+- Register link
+
+Allow role selection where useful for navigation, but never trust a user-selected role as authorization.
+
+The backend must determine the authenticated user's actual role.
+
+## Registration Page
+
+Create a role-selection screen.
+
+Options:
+
+**I'm Looking for a PG**
+
+**I'm a PG Owner**
+
+### Tenant Registration
+
+Fields:
+
+- Full name
+- Email
+- Phone
+- Password
+- Confirm password
+- Terms acceptance
+
+### PG Owner Registration
+
+Fields:
+
+- Full name
+- Email
+- Phone
+- Password
+- Confirm password
+- Optional business name
+- Terms acceptance
+
+Verify email or phone using an appropriate OTP or verification workflow.
+
+Provide secure resend limits and expiry handling.
+
+## Important Owner Registration Rule
+
+PG owners do not require Super Admin account approval.
+
+Once registration and required account verification are complete, owners can immediately access the PG Owner Dashboard.
+
+A PG owner with zero properties must still be able to access the dashboard and add a property.
+
+Property approval is separate from account registration.
+
+## Super Admin Registration
+
+Do not allow public Super Admin registration.
+
+Super Admin accounts must be provisioned through a secure administrative process.
+
+## Role-Based Login Routing
+
+After authentication:
+
+TENANT → `/tenant/home`
+
+PG_OWNER → `/owner/dashboard`
+
+SUPER_ADMIN → `/admin/dashboard`
+
+If a tenant has not joined a PG, show PG discovery and joining features.
+
+If a tenant has an active stay, show My PG Today.
+
+If an owner has no PG properties, show a welcoming empty dashboard with Add Your First PG.
+
+## Authentication Security
+
+Implement:
+
+- Password hashing using a modern secure algorithm
+- Secure access tokens
+- Refresh token rotation
+- Session revocation
+- Login rate limiting
+- OTP rate limiting
+- Password reset
+- Logout
+- Protected routes
+- Backend permission checks
+- Session expiry handling
+- Secure token storage suitable for web and mobile
+- Account recovery
+
+Do not store passwords or long-lived authentication secrets in localStorage.
+
+Never use frontend role selection as proof of authorization.
+
+---
+
+# PART 6 — TENANT APPLICATION
+
+Create a complete tenant mobile experience.
+
+## Tenant Navigation
+
+Use a mobile bottom navigation with:
+
+- Home
+- Explore
+- Connect
+- My PG
+- Profile
+
+Connect is the entry point for Startup Events in the current release.
+
+Do not implement public community posting yet.
+
+Use contextual navigation for users who have not joined a PG.
+
+## Tenant Home
+
+For users without an active stay:
+
+Show:
+
+- Search PGs
+- Recommended PGs
+- Featured PGs
+- Recently viewed properties
+- Startup Events
+- Local discovery
+- Saved PGs
+
+For active tenants:
+
+Show **My PG Today**.
+
+Sections:
+
+- Current PG information
+- Room and bed
+- Today's food menu
+- PG notices
+- Rent summary
+- Pending requests
+- Maintenance updates
+- Parcel notifications
+- Quick actions
+- Upcoming startup events
+- Nearby services
+
+All widgets must derive from the tenant's actual active stay.
+
+---
+
+# PART 7 — PG DISCOVERY
+
+Build a complete PG search experience.
+
+Features:
+
+- City and locality search
+- Price filtering
+- Property type filtering
+- Amenity filtering
+- Availability filtering
+- List view
+- Map view
+- Saved properties
+- Property details
+- Photo gallery
+- Property amenities
+- Rules and policies
+- Room types
+- Available beds
+- Monthly rent
+- Security deposit
+- Location information
+- Reviews
+- Contact or joining request
+
+Only properties meeting publication requirements may appear publicly.
+
+Do not expose owner-submitted unverified coordinates as verified locations.
+
+---
+
+# PART 8 — TENANT JOINING AND ONBOARDING
+
+Support two joining methods:
+
+1. Tenant discovers a PG and requests to join.
+2. Tenant scans a PG-specific QR code or opens `/join/:pgId`.
+
+Workflow:
+
+- Tenant selects PG.
+- Tenant submits joining request.
+- Owner reviews request.
+- Owner approves or rejects.
+- Owner assigns available room and bed.
+- Tenant reviews terms.
+- Tenant accepts terms.
+- Stay becomes active.
+
+Enforce one active stay per tenant.
+
+Do not allow multiple simultaneous active PG stays.
+
+Preserve joining history.
+
+Provide onboarding progress and clear status messages.
+
+---
+
+# PART 9 — TENANT DAILY LIVING FEATURES
+
+Implement:
+
+## Food and Mess
+
+- Today's breakfast
+- Lunch
+- Dinner
+- Weekly menu
+- Optional meal preferences
+- Meal feedback
+- Meal participation planning
+
+## PG Notices
+
+- Owner announcements
+- Maintenance notices
+- Water and electricity updates
+- Housekeeping notices
+- Important PG rules
+
+## Rent
+
+- Monthly rent
+- Due date
+- Payment history
+- Payment status
+- Outstanding balance
+- Deposit details
+- Receipts when available
+
+## Complaints
+
+- Submit complaint
+- Select category
+- Add description
+- Optional image
+- Track status
+- View updates
+
+## Maintenance
+
+- Request maintenance
+- Track progress
+- View resolution history
+
+## Laundry and Services
+
+- Discover available services
+- Request service when supported
+- Track request status
+
+## Parcels
+
+- Parcel received notice
+- Pickup status
+- Parcel history
+
+## Roommate Tools
+
+- Shared expense records
+- Shared grocery lists
+- Optional roommate coordination
+
+Keep roommate financial records separate from official PG rent accounting.
+
+## Attendance and Outing
+
+Optional features for properties that use them.
+
+Do not implement continuous GPS tracking.
+
+Use transparent, consent-aware workflows.
+
+Do not make unnecessary attendance tracking mandatory for all properties.
+
+## Checkout
+
+- Request checkout
+- View notice period
+- View pending rent
+- View deposit settlement
+- View unresolved disputes
+- Confirm checkout
+
+Preserve outstanding dues after checkout.
+
+Release the bed only when the checkout workflow is finalized.
+
+---
+
+# PART 10 — PG FINDER LOCAL
+
+Create a local discovery module.
+
+Categories:
+
+- Affordable Food
+- Groceries
+- Laundry
+- Fitness
+- Local Services
+- Transportation
+- Daily Essentials
+- Nearby Deals
+
+Allow tenants to browse businesses and offers around a selected locality.
+
+Do not require continuous background location access.
+
+Use city/locality-based discovery and optional location permission.
+
+Support clearly labeled sponsored business placements.
+
+If no real business API is configured, use fictional demo data.
+
+---
+
+# PART 11 — STARTUP EVENTS & NETWORKING
+
+Implement one shared Startup Events module for all three roles.
+
+Only Super Admin can create and manage events.
+
+Tenants and PG owners can discover and register.
+
+## Event Categories
+
+- Startup Networking
+- Founder Meetups
+- Entrepreneurship
+- AI & Technology
+- Hackathons
+- Startup Workshops
+- Investor Networking
+- Product & Innovation
+- Business Growth
+
+## Tenant and Owner Features
+
+- Browse published events
+- Search events
+- Filter by city
+- Filter by date
+- Filter by category
+- View event details
+- Save events
+- Register for free events
+- Open official external registration links
+- View registrations
+- Cancel registrations when permitted
+- Add events to calendar
+- Share event links
+
+## Event Details
+
+Show:
+
+- Banner
+- Title
+- Category
+- Date and time
+- Venue
+- Organizer
+- Description
+- Agenda
+- Speakers
+- Registration information
+- Maps link
+
+## PG Owner Sharing
+
+Allow PG owners to share published events through existing PG announcements.
+
+Owners can select only properties they are authorized to manage.
+
+## Super Admin Event Management
+
+Allow:
+
+- Create event
+- Save draft
+- Edit event
+- Publish event
+- Schedule publication
+- Unpublish event
+- Cancel event
+- Archive event
+- Feature event
+- Manage registrations
+- Manage waitlists
+- Mark attendance
+- View analytics
+- Export registrations
+
+## Event Lifecycle
+
+Publication:
+
+- Draft
+- Scheduled
+- Published
+- Unpublished
+- Archived
+
+Event status:
+
+- Upcoming
+- Ongoing
+- Completed
+- Cancelled
+
+Registration:
+
+- Registered
+- Waitlisted
+- Cancelled
+
+For paid events, use an official external registration URL.
+
+Do not implement event payment processing in the initial release.
+
+Do not implement jobs, referrals, public community feeds, or direct messaging.
+
+These are future features.
+
+---
+
+# PART 12 — PG OWNER DASHBOARD
+
+Build a complete owner management experience.
+
+Mobile navigation:
+
+- Home
+- Properties
+- Tenants
+- Finance
+- More
+
+Desktop:
+
+Use a responsive sidebar.
+
+## Owner Dashboard Home
+
+Show:
+
+- Total properties
+- Approved properties
+- Pending approvals
+- Occupied beds
+- Vacant beds
+- Active tenants
+- Rent collected
+- Pending rent
+- Expenses
+- Outstanding dues
+- New joining requests
+- Open complaints
+- Pending maintenance
+- Upcoming startup events
+
+Include a **Today's Operations** section.
+
+Show actionable tasks instead of only charts.
+
+## Property Selector
+
+Owners with multiple properties must be able to switch between properties.
+
+Support an All Properties view where appropriate.
+
+Every property-scoped query must respect the selected property and authorization.
+
+---
+
+# PART 13 — ADD PG PROPERTY
+
+Create a multi-step Add PG wizard.
+
+Steps:
+
+1. Basic property details
+2. Property type
+3. Complete address
+4. Location information
+5. Amenities
+6. Rules and policies
+7. Property photos
+8. Room configuration
+9. Pricing
+10. Review and submit
+
+Support draft saving.
+
+A newly created property must not automatically become publicly visible.
+
+---
+
+# PART 14 — PROPERTY APPROVAL SYSTEM
+
+Each property requires Super Admin approval.
+
+Statuses:
+
+- Draft
+- Pending Approval
+- Under Review
+- Corrections Required
+- Resubmitted
+- Approved
+- Rejected
+- Suspended
+
+Owners can:
+
+- Submit properties
+- View approval status
+- View feedback
+- Correct details
+- Resubmit
+- View approval history
+
+Super Admin can:
+
+- Review submissions
+- Inspect property details
+- Request corrections
+- Approve
+- Reject
+- Suspend
+- Record decisions
+
+Every decision must include:
+
+- Actor
+- Timestamp
+- Reason
+- Previous status
+- New status
+
+Property approval must not depend on the owner's subscription tier.
+
+---
+
+# PART 15 — PROPERTY LOCATION VERIFICATION
+
+Implement a separate location verification workflow.
+
+Owner submits:
+
+- Complete address
+- Landmark
+- City
+- State
+- Postal code
+- Optional Google Maps URL
+- Approximate location pin
+
+Super Admin reviews and confirms verified coordinates.
+
+Statuses:
+
+- Draft
+- Pending Verification
+- Under Review
+- Corrections Required
+- Resubmitted
+- Verified
+- Rejected
+- Reverification Required
+
+Maintain:
+
+- Owner-submitted coordinates
+- Admin-verified coordinates
+- Verification status
+- Reviewer
+- Review notes
+- Verification history
+- Timestamps
+
+Never allow owners to self-verify their property location.
+
+A property requires both:
+
+1. Approved property status.
+2. Verified location.
+
+It also requires a valid listing entitlement before becoming publicly published.
+
+---
+
+# PART 16 — ROOMS AND BEDS
+
+For approved properties, allow owners to manage:
+
+- Floors
+- Rooms
+- Room types
+- Beds
+- Bed availability
+- Rent by room type
+- Occupancy
+- Maintenance status
+
+Bed statuses:
+
+- Available
+- Occupied
+- Reserved
+- Maintenance
+- Inactive
+
+Prevent assigning the same bed to multiple active tenants.
+
+Support transfers between rooms and beds.
+
+Maintain occupancy history.
+
+---
+
+# PART 17 — TENANT MANAGEMENT
+
+Owners can:
+
+- View active tenants
+- View pending joining requests
+- Approve or reject requests
+- Assign beds
+- View tenant stay details
+- Record rent payments
+- Manage deposits
+- Create notices
+- Handle complaints
+- Process checkout
+- View former tenants
+- Track outstanding dues
+
+Preserve tenant history after checkout.
+
+Do not permanently delete financial records during normal checkout.
+
+---
+
+# PART 18 — FINANCE AND EXPENSE MANAGEMENT
+
+All owner plans, including Basic, must support core financial management.
+
+Modules:
+
+- Rent tracking
+- Payment records
+- Security deposits
+- Expense tracking
+- Outstanding dues
+- Financial reports
+- Monthly summaries
+
+## Expense Categories
+
+- Groceries
+- Electricity
+- Water
+- Internet
+- Salaries
+- Maintenance
+- Cleaning
+- Rent
+- Supplies
+- Other
+
+Support:
+
+- Add expense
+- Edit expense
+- Attach receipt
+- Category
+- Property
+- Date
+- Amount
+- Notes
+
+Provide monthly income and expense summaries.
+
+Keep basic analytics and financial reports available to all plans.
+
+Do not make expense tracking a Pro-only feature.
+
+---
+
+# PART 19 — FOOD, MAINTENANCE AND STAFF
+
+## Food Management
+
+- Daily menu
+- Weekly menu
+- Meal preferences
+- Meal feedback
+- Meal count estimates
+- Food expense records
+
+## Complaints
+
+- Complaint inbox
+- Assignment
+- Priority
+- Status
+- Resolution notes
+- History
+
+## Maintenance
+
+- Maintenance requests
+- Assigned staff
+- Due dates
+- Completion status
+- Costs
+- History
+
+## Staff Management
+
+For eligible subscription tiers:
+
+- Staff accounts
+- Permissions
+- Staff tasks
+- Attendance
+- Payroll records
+- Property assignment
+
+Staff must have limited permissions based on their responsibilities.
+
+Do not give staff full owner or Super Admin access.
+
+---
+
+# PART 20 — OWNER TRACKING CENTER
+
+Implement an operational Tracking Center.
+
+Track:
+
+- Joining requests
+- Rent reminders
+- Expenses
+- Outstanding dues
+- Complaints
+- Maintenance
+- Checkouts
+- Property approvals
+- Location verification
+- Staff tasks
+
+Basic owners can access core records and their statuses.
+
+Pro owners receive advanced tracking features.
+
+Business owners receive multi-property tracking and staff coordination features.
+
+Include timelines, filters, status history, and relevant actions.
+
+Do not invent tenant GPS tracking.
+
+---
+
+# PART 21 — SUBSCRIPTION PLANS
+
+Implement exactly three owner plans.
+
+## BASIC
+
+Price: ₹0/month
+
+Listing model:
+
+₹199 one-time lifetime listing fee per approved and verified PG.
+
+Features:
+
+- Owner dashboard
+- Unlimited property submissions
+- Property approval tracking
+- Location verification
+- Rooms and beds
+- Tenant management
+- Joining requests
+- Rent tracking
+- Expense tracking
+- Basic reports
+- Complaints
+- Checkout
+- Core property management
+
+Lifetime listing rights remain subject to property approval, verified location, and platform policies.
+
+## PRO
+
+Price: ₹199/month
+
+Includes:
+
+- Up to 5 active PG listings while subscribed
+- No separate lifetime listing fee for properties covered by the active subscription
+- Everything in Basic
+- Advanced Tracking Center
+- Detailed verification request history
+- Automated rent reminders
+- Maintenance follow-ups
+- Advanced outstanding dues tracking
+
+## BUSINESS
+
+Price: ₹499/month
+
+Includes:
+
+- Up to 20 active PG listings while subscribed
+- No separate lifetime listing fee for properties covered by the active subscription
+- Everything in Pro
+- Multi-PG Tracking Center
+- Staff accounts and permissions
+- Staff task management
+- Staff attendance
+- Bulk reminders
+- Multi-property operations
+- Priority support
+
+## Subscription Rules
+
+- Owners start on Basic.
+- Subscription purchase does not guarantee property approval.
+- Subscription purchase does not bypass location verification.
+- Subscription-covered listings remain active only while the entitlement is valid.
+- Provide a clearly disclosed 7-day grace period after failed renewal.
+- After the grace period, subscription-only listings become unpublished unless renewed or converted to lifetime listings.
+- Previously purchased lifetime listings remain valid independently of subscription status.
+- Preserve property, tenant, and financial records after subscription expiry.
+- Do not delete data when a subscription expires.
+- Allow upgrades and downgrades.
+- Prevent listing limits from being bypassed.
+- Clearly show billing terms and renewal dates.
+
+Support optional annual plans later.
+
+Suggested future annual prices:
+
+- Pro: ₹1,999/year
+- Business: ₹4,999/year
+
+Do not introduce additional subscription tiers.
+
+## Billing Integration
+
+Create a payment provider abstraction.
+
+Support:
+
+- Payment initiation
+- Provider checkout
+- Payment verification
+- Webhook processing
+- Idempotency
+- Invoice history
+- Subscription status
+- Cancellation
+- Renewal
+- Failed payment handling
+
+Do not hardcode payment success.
+
+Do not store payment card information.
+
+For mobile distribution, keep billing provider integration configurable and verify current Apple App Store and Google Play billing policies before enabling purchases.
+
+---
+
+# PART 22 — FEATURED PG PROMOTIONS
+
+Create an optional promotional system.
+
+Illustrative packages:
+
+- ₹299 for 7 days
+- ₹799 for 30 days
+- ₹1,999 for 90 days
+
+Owners can:
+
+- View promotion packages
+- Select eligible property
+- Purchase promotion
+- View active promotions
+- View promotion history
+
+Super Admin can:
+
+- Manage promotion packages
+- Review active promotions
+- Monitor expiry
+- View promotion revenue
+- Disable inappropriate promotions
+
+Featured placement must not override approval or verification requirements.
+
+Clearly label sponsored or promoted properties.
+
+---
+
+# PART 23 — LOCAL BUSINESS ADVERTISING
+
+Create a local business advertising module.
+
+Illustrative packages:
+
+- ₹499 for 7 days
+- ₹1,499 for 30 days
+- ₹3,999 for 90 days
+
+Support:
+
+- Business name
+- Advertisement title
+- Description
+- Image
+- Target city/locality
+- Start date
+- End date
+- Placement
+- Status
+- Click tracking
+- Impression tracking
+
+Super Admin manages advertising campaigns.
+
+Clearly label paid advertisements.
+
+Do not disguise sponsored content as organic recommendations.
+
+---
+
+# PART 24 — GOOGLE ADMOB INTEGRATION
+
+Prepare the mobile application for Google AdMob.
+
+Supported formats:
+
+1. App Open Ads
+2. Banner Ads
+3. Native Ads
+4. Interstitial Ads
+5. Rewarded Ads
+
+Use a centralized advertising service.
+
+Create an interface such as:
+
+AdService:
+- initialize()
+- loadAppOpenAd()
+- showAppOpenAd()
+- loadBannerAd()
+- loadNativeAd()
+- loadInterstitialAd()
+- showInterstitialAd()
+- loadRewardedAd()
+- showRewardedAd()
+
+Use official supported SDK integrations and compatible Capacitor plugins.
+
+## Ad Placement Rules
+
+App Open Ads:
+
+- Show only at appropriate app loading or foreground transitions.
+- Use frequency caps.
+- Never show over sensitive workflows.
+
+Banner Ads:
+
+- Suitable for selected browsing screens.
+- Avoid obscuring navigation and content.
+
+Native Ads:
+
+- Suitable for PG discovery and local content.
+- Clearly distinguish advertisements from organic content.
+
+Interstitial Ads:
+
+- Show only at natural transitions.
+- Do not interrupt rent payment, registration, or essential tasks.
+
+Rewarded Ads:
+
+- Completely optional.
+- Offer only clearly disclosed, appropriate optional benefits.
+- Never require rewarded ads to access essential services.
+
+## Advertising Settings
+
+Super Admin should be able to configure:
+
+- Ad placement enabled/disabled
+- Ad frequency caps
+- Ad format availability
+- Ad unit identifiers
+- Environment mode
+- Ad-free screens
+- Privacy settings
+
+Do not hardcode production ad unit IDs.
+
+Use test ads during development.
+
+Implement privacy and consent requirements applicable to the user's region and age.
+
+Do not show inappropriate personalized advertisements to underage users.
+
+Do not promise guaranteed ad revenue.
+
+---
+
+# PART 25 — SUPER ADMIN DASHBOARD
+
+Build a complete platform management dashboard.
+
+Navigation:
+
+- Dashboard
+- PG Owners
+- Properties
+- PG Approvals
+- Location Verification
+- Tenants
+- Rooms and Occupancy
+- Subscriptions
+- Lifetime Listings
+- Payments
+- Featured Promotions
+- Business Advertising
+- Startup Events
+- Event Registrations
+- Complaints
+- Disputes
+- Support
+- Analytics
+- Notifications
+- CMS
+- Roles and Permissions
+- Audit Logs
+- Settings
+
+## Admin Overview
+
+Show:
+
+- Total owners
+- Total PG properties
+- Approved properties
+- Pending approvals
+- Verified locations
+- Total tenants
+- Active stays
+- Available beds
+- Occupancy rate
+- Subscription revenue
+- Lifetime listing revenue
+- Promotion revenue
+- Advertising revenue
+- Event registrations
+
+Use real database-derived metrics.
+
+Do not invent financial values.
+
+## Owner Management
+
+- View owners
+- Search and filter
+- View account details
+- View properties
+- View subscription
+- Review account issues
+- Suspend accounts when justified
+- View history
+
+Do not require owner account approval as part of normal registration.
+
+## PG Approval Management
+
+- Review properties
+- Approve
+- Reject
+- Request corrections
+- Suspend
+- View documents
+- View history
+
+## Location Verification
+
+- Review requests
+- Inspect submitted address
+- Review map pin
+- Correct coordinates
+- Verify location
+- Request corrections
+- Reject request
+- Maintain audit history
+
+## Tenant Management
+
+- View tenants
+- View active stays
+- View joining history
+- View disputes
+- View support cases
+
+## Monetization
+
+- Subscription plans
+- Active subscriptions
+- Lifetime listing purchases
+- Payment transactions
+- Featured promotions
+- Local business advertisements
+- Revenue reporting
+
+## Startup Events
+
+- Create
+- Edit
+- Publish
+- Schedule
+- Feature
+- Cancel
+- Archive
+- Manage registrations
+- Manage attendance
+- View analytics
+
+## Support and Disputes
+
+- Support tickets
+- Tenant complaints
+- Owner disputes
+- Escalations
+- Resolution history
+
+## CMS
+
+- Landing page content
+- FAQs
+- Terms and policies
+- Announcement banners
+- Public content management
+
+## Audit Logs
+
+Record important administrative actions.
+
+---
+
+# PART 26 — DATABASE DESIGN
+
+Create a normalized PostgreSQL schema.
+
+Core entities:
+
+- User
+- UserSession
+- UserRole
+- Permission
+- OwnerProfile
+- TenantProfile
+- Property
+- PropertyImage
+- PropertyAmenity
+- PropertyRule
+- PropertyApproval
+- PropertyApprovalHistory
+- LocationVerification
+- LocationVerificationHistory
+- Floor
+- Room
+- Bed
+- JoiningRequest
+- TenantStay
+- BedAssignment
+- RentCharge
+- RentPayment
+- SecurityDeposit
+- Expense
+- OutstandingDue
+- FoodMenu
+- MealPreference
+- Complaint
+- MaintenanceRequest
+- Staff
+- StaffAssignment
+- StaffTask
+- StaffAttendance
+- PayrollRecord
+- CheckoutRequest
+- Review
+- Notification
+- NotificationPreference
+- ActivityLog
+- SubscriptionPlan
+- OwnerSubscription
+- ListingEntitlement
+- LifetimeListingPurchase
+- PaymentTransaction
+- FeaturedPromotion
+- AdvertisementCampaign
+- AdvertisementPlacement
+- StartupEvent
+- EventSpeaker
+- EventAgenda
+- EventRegistration
+- EventBookmark
+- EventAuditLog
+- SupportTicket
+- AuditLog
+
+Use appropriate:
+
+- Primary keys
+- Foreign keys
+- Unique constraints
+- Indexes
+- Timestamps
+- Soft deletion where appropriate
+- Transaction boundaries
+
+Store financial amounts safely using integer minor units or appropriate decimal types.
+
+Do not use floating-point arithmetic for financial accounting.
+
+Enforce data integrity at the database and service layers.
+
+---
+
+# PART 27 — SHARED BUSINESS WORKFLOWS
+
+Implement complete workflows.
+
+## Owner Registration
+
+Register → Verify Account → Owner Dashboard → Add PG
+
+## Property Publication
+
+Create Property → Submit Location → Admin Verifies Location → Property Approval → Listing Entitlement → Public Listing
+
+Location verification and property approval are independent review processes and may proceed in parallel.
+
+Public publication requires all applicable conditions to be satisfied.
+
+## Tenant Joining
+
+Browse PG → Request Join → Owner Approves → Bed Assigned → Tenant Accepts Terms → Active Stay
+
+## Rent
+
+Generate Charge → Notify Tenant → Record Payment → Update Balance → Issue Receipt
+
+## Checkout
+
+Request Checkout → Review Dues → Resolve Settlement → Finalize Checkout → Release Bed → Preserve History
+
+## Startup Events
+
+Admin Creates Event → Publishes → Tenant/Owner Discovers → Registers → Admin Manages Registration → Event Completed
+
+## Subscription
+
+Select Plan → Initiate Payment → Verify Payment → Activate Entitlement → Manage Renewal or Expiry
+
+Use proper state transitions.
+
+Do not allow impossible or unauthorized transitions.
+
+---
+
+# PART 28 — ROLE-BASED ACCESS CONTROL
+
+Implement backend-enforced permissions.
+
+TENANT:
+
+- Manage own profile
+- Discover public PGs
+- Request joining
+- View own stay
+- Manage own requests
+- View own rent records
+- Browse and register for events
+
+PG_OWNER:
+
+- Manage own properties
+- Manage authorized property operations
+- Manage own tenants and staff
+- View own finances
+- Manage subscription
+- Browse and register for events
+- Share published events with authorized properties
+
+SUPER_ADMIN:
+
+- Manage platform operations
+- Review properties
+- Verify locations
+- Manage monetization
+- Manage startup events
+- Access authorized platform analytics
+- Manage support and audit logs
+
+Every API must validate permissions and resource ownership.
+
+Never rely only on hidden buttons.
+
+---
+
+# PART 29 — API DESIGN
+
+Create versioned REST APIs.
+
+Base path:
+
+`/api/v1`
+
+Suggested route groups:
+
+- `/auth`
+- `/users`
+- `/properties`
+- `/approvals`
+- `/location-verifications`
+- `/rooms`
+- `/beds`
+- `/tenants`
+- `/joining-requests`
+- `/rent`
+- `/expenses`
+- `/food`
+- `/complaints`
+- `/maintenance`
+- `/staff`
+- `/checkouts`
+- `/subscriptions`
+- `/listing-entitlements`
+- `/payments`
+- `/promotions`
+- `/advertisements`
+- `/events`
+- `/event-registrations`
+- `/notifications`
+- `/analytics`
+- `/admin`
+- `/audit-logs`
+
+Use:
+
+- Request validation
+- Consistent response schemas
+- Pagination
+- Search
+- Filtering
+- Authorization middleware
+- Centralized errors
+- Appropriate HTTP status codes
+
+Generate OpenAPI documentation where feasible.
+
+---
+
+# PART 30 — NOTIFICATION SYSTEM
+
+Create one centralized notification module.
+
+Notification channels:
+
+- In-app
+- Push
+- Email
+- SMS when configured
+
+Notification events:
+
+- Account verification
+- Joining request
+- Joining approval
+- Property approval
+- Location verification
+- Rent reminder
+- Payment confirmation
+- Complaint update
+- Maintenance update
+- Subscription renewal
+- Subscription expiry
+- Event publication
+- Event registration
+- Event reminder
+- Event cancellation
+
+Use notification preferences.
+
+Do not send duplicate notifications.
+
+Use a persistent job mechanism for scheduled notifications.
+
+---
+
+# PART 31 — SECURITY AND PRIVACY
+
+Implement:
+
+- Backend authorization
+- Secure password storage
+- Rate limiting
+- Input validation
+- File upload validation
+- Secure secrets management
+- Audit logging
+- Payment webhook verification
+- Secure session handling
+- CORS configuration
+- CSRF protection where applicable
+- Database constraints
+- Protection against insecure direct object references
+- Data minimization
+- User privacy controls
+
+Never expose:
+
+- Password hashes
+- Private tokens
+- Payment credentials
+- Tenant personal documents
+- Private admin information
+- Unverified location data as verified data
+
+Do not implement hidden tenant location tracking.
+
+Public event participation must not reveal a tenant's PG or room.
+
+Provide moderation, reporting, and age-appropriate controls for any future social features.
+
+---
+
+# PART 32 — PERFORMANCE
+
+Optimize for mobile devices and low-bandwidth connections.
+
+Implement:
+
+- Lazy-loaded routes
+- Image optimization
+- Pagination
+- Query caching
+- Loading skeletons
+- Debounced search
+- Optimistic updates where safe
+- Proper error recovery
+- Minimal initial JavaScript bundle
+- Efficient database queries
+
+Avoid loading the entire application on the landing page.
+
+---
+
+# PART 33 — MOCK DATA AND DEVELOPMENT MODE
+
+Provide a development demo mode.
+
+Create consistent fictional data across all modules.
+
+Example PGs:
+
+1. Green Nest PG — Madhapur, Hyderabad
+2. Urban Stay PG — Gachibowli, Hyderabad
+3. Comfort Living PG — Kondapur, Hyderabad
+4. Elite Residency PG — Hitech City, Hyderabad
+
+Use different approval statuses.
+
+Include:
+
+- Demo tenants
+- Demo owners
+- Demo rooms
+- Demo beds
+- Rent records
+- Expenses
+- Joining requests
+- Complaints
+- Location verification requests
+- Subscriptions
+- Events
+- Event registrations
+
+All mock data must be connected through stable IDs.
+
+Example:
+
+A tenant assigned to a particular bed must appear in that room's occupancy and the owner's tenant list.
+
+A rent payment must update the tenant's balance and the owner's financial totals.
+
+A property approval must update its status consistently across the owner and admin dashboards.
+
+An event published by admin must appear in tenant and owner discovery.
+
+If a real database is unavailable, use one centralized mock data adapter with clear development-only persistence behavior.
+
+Do not pretend that independent frontend-only mock states provide real cross-device synchronization.
+
+---
+
+# PART 34 — MOBILE APP EXPERIENCE
+
+Use Capacitor-compatible architecture.
+
+Prepare:
+
+- Android support
+- iOS support
+- Native splash screen
+- App icon configuration
+- Status bar styling
+- Safe-area handling
+- Android back button
+- Deep links
+- Push notification abstraction
+- Camera/file upload abstraction
+- QR scanning abstraction
+- Network connectivity handling
+
+Provide graceful fallbacks when native plugins are unavailable in the web preview.
+
+The app must remain fully usable in the browser.
+
+Do not require a native runtime to preview ordinary screens.
+
+---
+
+# PART 35 — RESPONSIVE ROLE-SPECIFIC NAVIGATION
+
+## Public
+
+Responsive top navigation and mobile menu.
+
+## Tenant
+
+Mobile bottom navigation:
+
+- Home
+- Explore
+- Connect
+- My PG
+- Profile
+
+Connect currently opens Startup Events.
+
+## PG Owner
+
+Mobile bottom navigation:
+
+- Home
+- Properties
+- Tenants
+- Finance
+- More
+
+Use a desktop sidebar for larger screens.
+
+## Super Admin
+
+Desktop sidebar.
+
+On mobile:
+
+- Collapsible navigation drawer
+- Responsive KPI cards
+- Mobile-friendly tables
+- Full-screen forms where necessary
+- Compact action menus
+
+Ensure every important admin operation is usable on a phone.
+
+---
+
+# PART 36 — ERROR HANDLING AND EMPTY STATES
+
+Create professional states for:
+
+- No properties
+- No tenants
+- No rooms
+- No events
+- No registrations
+- No internet
+- API failure
+- Unauthorized access
+- Expired session
+- Subscription expired
+- Property pending approval
+- Location pending verification
+- No available beds
+
+Provide useful next actions.
+
+Avoid blank screens and generic error messages.
+
+---
+
+# PART 37 — TESTING
+
+Implement tests for important workflows.
+
+Authentication:
+
+- Tenant registration
+- Owner registration
+- Role-based routing
+- Unauthorized access
+
+Properties:
+
+- Property creation
+- Approval transitions
+- Location verification
+- Publication eligibility
+
+Tenants:
+
+- Joining request
+- Bed assignment
+- Single active stay
+- Checkout
+
+Finance:
+
+- Rent balances
+- Expense calculations
+- Outstanding dues
+
+Subscriptions:
+
+- Listing limits
+- Subscription expiry
+- Lifetime listing preservation
+
+Events:
+
+- Admin publication
+- Public visibility
+- Registration
+- Capacity enforcement
+- Cancellation
+
+Security:
+
+- Cross-owner data access prevention
+- Tenant data isolation
+- Admin authorization
+
+Also test mobile layouts at common viewport sizes.
+
+---
+
+# PART 38 — IMPLEMENTATION PRIORITY
+
+Do not attempt to implement every feature superficially in one pass.
+
+Build in phases while maintaining one integrated codebase.
+
+## PHASE 1 — FOUNDATION
+
+Implement:
+
+- Project structure
+- Design system
+- Landing page
+- Authentication UI
+- Registration UI
+- Role-based routing
+- Shared layouts
+- Responsive navigation
+- Database and backend foundation
+
+## PHASE 2 — CORE PG MARKETPLACE
+
+Implement:
+
+- PG discovery
+- Property details
+- Owner dashboard
+- Add PG
+- Property approvals
+- Location verification
+- Admin review workflows
+
+## PHASE 3 — TENANT OPERATIONS
+
+Implement:
+
+- Joining requests
+- QR onboarding
+- Rooms and beds
+- Active stays
+- Rent
+- Expenses
+- Complaints
+- Food
+- Checkout
+
+## PHASE 4 — OWNER OPERATIONS
+
+Implement:
+
+- Tracking Center
+- Maintenance
+- Staff
+- Payroll
+- Notifications
+- Reports
+
+## PHASE 5 — MONETIZATION
+
+Implement:
+
+- Basic / Pro / Business
+- Lifetime listings
+- Listing entitlements
+- Featured promotions
+- Business advertising
+- Payment provider abstraction
+
+## PHASE 6 — EVENTS
+
+Implement:
+
+- Admin Events Management
+- Tenant Events
+- Owner Events
+- Registration
+- Saved Events
+- Event notifications
+
+## PHASE 7 — ENGAGEMENT AND MOBILE
+
+Implement:
+
+- PG Finder Local
+- Roommate tools
+- Parcel notices
+- Capacitor configuration
+- AdMob integration
+- Mobile polish
+
+Maintain compatibility across all phases.
+
+---
+
+# PART 39 — ACCEPTANCE CRITERIA
+
+The application is successful only when:
+
+1. Public landing page works.
+2. Tenant registration works.
+3. Owner registration works.
+4. Super Admin access is restricted.
+5. Role-based login routes correctly.
+6. Owner can access dashboard with zero properties.
+7. Owner can submit a PG.
+8. Admin can review and approve a PG.
+9. Admin can verify property location.
+10. Eligible PGs appear in public discovery.
+11. Tenant can submit joining request.
+12. Owner can assign room and bed.
+13. Tenant can view active stay.
+14. Rent and expenses remain consistent.
+15. Checkout preserves financial history.
+16. Subscription limits work.
+17. Lifetime listing rights are preserved.
+18. Admin can create and publish events.
+19. Tenant and owner can discover published events.
+20. Event registration works.
+21. Unauthorized users cannot modify protected data.
+22. Mobile layouts work without overflow.
+23. Existing features remain functional after each phase.
+24. Production builds complete successfully.
+
+---
+
+# FINAL DEVELOPMENT INSTRUCTIONS
+
+You are acting as a senior full-stack architect, mobile application engineer, UI/UX designer, database architect, and QA engineer.
+
+Build PG Finder as a coherent modular monolith.
+
+Prioritize:
+
+1. Correct architecture.
+2. Professional mobile-first UI.
+3. Shared data consistency.
+4. Role-based security.
+5. Working navigation.
+6. Realistic business workflows.
+7. Backend readiness.
+8. Future scalability.
+
+Do not generate disconnected dashboards.
+
+Do not create buttons that appear functional but have no action.
+
+Do not hardcode success states for authentication, payments, property approval, or event registration.
+
+When backend infrastructure is unavailable, use clearly labeled development adapters.
+
+Preserve a clean separation between UI, application logic, domain services, and persistence.
+
+Start by creating the project architecture and implementing Phase 1.
+
+After Phase 1, explain what was implemented, which files were created, what works, what remains mocked, and what should be implemented next.
+
+Do not claim that unfinished phases are complete.
+
+The final product should feel like one integrated PG Finder mobile application, with a consistent emerald green design and seamless experiences for tenants, PG owners, and Super Admins.
